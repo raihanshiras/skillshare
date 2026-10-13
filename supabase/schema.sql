@@ -132,6 +132,10 @@ drop policy if exists profiles_select_authenticated on public.profiles;
 create policy profiles_select_authenticated on public.profiles
 for select to authenticated using (true);
 
+-- Client discovery needs to read offered skills for other profiles, but
+-- phone numbers and dates of birth remain isolated in profile_private.
+-- Mutation policies below still restrict edits to the current user's rows.
+
 drop policy if exists profiles_update_self on public.profiles;
 create policy profiles_update_self on public.profiles
 for update to authenticated using (id = auth.uid()) with check (id = auth.uid());
@@ -152,9 +156,11 @@ drop policy if exists skills_insert_authenticated on public.skills;
 create policy skills_insert_authenticated on public.skills
 for insert to authenticated with check (true);
 
+-- Skill and skill-link visibility is required for the campus discovery directory.
+-- Only the profile owner may mutate their own user_skills rows (see policies below).
 drop policy if exists user_skills_select_authenticated on public.user_skills;
 create policy user_skills_select_authenticated on public.user_skills
-for select to authenticated using (user_id = auth.uid());
+for select to authenticated using (true);
 
 drop policy if exists user_skills_insert_self on public.user_skills;
 create policy user_skills_insert_self on public.user_skills
