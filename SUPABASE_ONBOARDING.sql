@@ -186,6 +186,8 @@ for select
 to authenticated
 using ((select auth.uid()) is not null);
 
+-- Authenticated users may discover public skill offers/needs across the campus.
+-- Private contact data stays in profile_private with self-only policies.
 drop policy if exists "user_skills_select_authenticated" on public.user_skills;
 create policy "user_skills_select_authenticated"
 on public.user_skills
