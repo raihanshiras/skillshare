@@ -132,6 +132,10 @@ drop policy if exists profiles_select_authenticated on public.profiles;
 create policy profiles_select_authenticated on public.profiles
 for select to authenticated using (true);
 
+-- Client discovery needs to read offered skills for other profiles, but
+-- phone numbers and dates of birth remain isolated in profile_private.
+-- Mutation policies below still restrict edits to the current user's rows.
+
 drop policy if exists profiles_update_self on public.profiles;
 create policy profiles_update_self on public.profiles
 for update to authenticated using (id = auth.uid()) with check (id = auth.uid());
