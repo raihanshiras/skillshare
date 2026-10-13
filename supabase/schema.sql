@@ -152,9 +152,11 @@ drop policy if exists skills_insert_authenticated on public.skills;
 create policy skills_insert_authenticated on public.skills
 for insert to authenticated with check (true);
 
+-- Skill and skill-link visibility is required for the campus discovery directory.
+-- Only the profile owner may mutate their own user_skills rows (see policies below).
 drop policy if exists user_skills_select_authenticated on public.user_skills;
 create policy user_skills_select_authenticated on public.user_skills
-for select to authenticated using (user_id = auth.uid());
+for select to authenticated using (true);
 
 drop policy if exists user_skills_insert_self on public.user_skills;
 create policy user_skills_insert_self on public.user_skills
